@@ -48,10 +48,10 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'root';
-$db['default']['password'] = '';
-$db['default']['database'] = 'bewhere';
+$db['default']['hostname'] = 'OPENSHIFT_<database>_DB_HOST';
+$db['default']['username'] = 'OPENSHIFT_<database>_DB_USERNAME';
+$db['default']['password'] = 'OPENSHIFT_<database>_DB_PASSWORD';
+$db['default']['database'] = 'OPENSHIFT_<database>_DB_URL';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
