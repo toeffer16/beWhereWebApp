@@ -50,7 +50,7 @@
         <div class="site-wrapper">
 
             <div class="site-wrapper-inner">
-
+        <?php $env_var = getenv('OPENSHIFT_ENV_VAR'); ?>
                 <div class="cover-container">
 
                     <div class="masthead clearfix">
