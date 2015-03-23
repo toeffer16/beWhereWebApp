@@ -48,11 +48,10 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = getenv('OPENSHIFT_<database>_DB_HOST');
-$db['default']['port'] = getenv('OPENSHIFT_<database>_DB_PORT');
-$db['default']['username'] = getenv('OPENSHIFT_<database>_DB_USERNAME');
-$db['default']['password'] = getenv('OPENSHIFT_<database>_DB_PASSWORD');
-$db['default']['database'] = getenv('$ rhc env set <Variable>=<Value> <Variable2>=<Value2> -a App_Name');
+$db['default']['hostname'] = 'localhost';
+$db['default']['username'] = 'root';
+$db['default']['password'] = '';
+$db['default']['database'] = 'bewhere';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

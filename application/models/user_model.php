@@ -31,6 +31,12 @@ class User_model extends CI_Model {
         return $query->num_rows() > 0;
     }
     
+    public function is_username_exists($username){
+        $this->db->where("Username", $username);
+        $query = $this->db->get("users");
+        return $query->num_rows() > 0;
+    }
+    
     public function add_user($username, $password, $type = "member", $first_name="", $last_name=""){
         $params = array(
            'Username' => $username ,
@@ -61,7 +67,9 @@ class User_model extends CI_Model {
     }
     
     public function get_user_privileges($username){
-        
+        $this->db->select('Type');
+        $this->db->where('Username', $username);
+        return $this->db->get('users')->row()->Type;
     }
     
     public function get_user_id($username){

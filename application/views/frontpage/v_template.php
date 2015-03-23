@@ -29,11 +29,11 @@
             body {
                 padding-top: 50px;
                 padding-bottom: 20px;        
-                background-image: url('<?php echo base_url("img/bgni.png"); ?>');
-                background-position: center;
-                background-repeat: no-repeat;
-                width: 100%;
-                height: 100%;
+                background: url('<?php echo base_url("img/bg2.png"); ?>') no-repeat center center fixed; 
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;
             }
 
         </style>
@@ -65,7 +65,7 @@
 
                     <div class="mastfoot">
                         <div class="inner">
-                            <p style="text-shadow: 30px; color: white;">&copy; BeWhere 2015</p>
+                            <p style="text-shadow:4px 4px 4px #0C090A; color:white;">&copy; BeWhere 2015</p>
                         </div>
                     </div>
 

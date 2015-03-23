@@ -1,3 +1,8 @@
+<style>
+.well {
+    background-color: #f1f8e9;
+}
+</style>
 
 <div class="panel panel-success">
     <div class="panel-heading">Administrator Panel</div>

@@ -42,4 +42,13 @@ class Crime_model extends CI_Model {
         $this->db->update(Crime_model::TABLENAME, $params); 
     }
     
+    public function get_crimes_match_autocomplete($query_string){
+        // SELECT * FROM `crimes` WHERE Crime_Name LIKE 'r%' LIMIT 3
+        $this->db->select('Crime_ID, Crime_Name');
+        $this->db->like('Crime_Name', $query_string, 'after'); 
+        $this->db->limit(10);
+        $query = $this->db->get(Crime_model::TABLENAME);
+        return $query->result_array();
+    }
+    
 }

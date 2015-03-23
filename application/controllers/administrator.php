@@ -85,13 +85,20 @@ class Administrator extends CI_Controller {
         // Check if that user exists in the database and that he/she is giving the correct password
         if ($this->user_model->is_exist($username, $password)) {
             
-            // If the user is register and provides the correct password,
-            // set a session cookie in his/her browser to indicate that he/she 
-            // is currently logged in the site. The application will check this
-            // session cookie to verify if the current user is logged in or not.
-            $this->session->set_userdata('username', $username);
-            redirect("administrator"); // redirect to admin page
+            $privilege = $this->user_model->get_user_privileges($username);
+            if($privilege === 'admin' || $privilege === 'contributor'){
             
+                // If the user is register and provides the correct password,
+                // set a session cookie in his/her browser to indicate that he/she 
+                // is currently logged in the site. The application will check this
+                // session cookie to verify if the current user is logged in or not.
+                $this->session->set_userdata('username', $username);
+                $this->session->set_userdata('user_id', $this->user_model->get_user_id($username));
+                redirect("administrator"); // redirect to admin page
+            }else{
+                $this->session->set_flashdata('notification', "Only users with Admin and Contributor accounts are allowed access.");
+                redirect("administrator/login");
+            }
         } else {
             
             // If the user entered incorrect login credentials, the application
@@ -107,6 +114,7 @@ class Administrator extends CI_Controller {
         $this->load->library('session');
         $this->session->set_flashdata('notification', "Successfully Logout!");
         $this->session->unset_userdata('username');
+        $this->session->unset_userdata('user_id');
         redirect("administrator/login");
     }
     
@@ -250,6 +258,117 @@ class Administrator extends CI_Controller {
         $this->load->view('v_template', $vars);
     }
     
+    public function get_crime_suggestions(){
+        $this->load->model('crime_model');
+        $user_query = $this->input->get('crime_suggest');
+        $fixedq = array();
+        $matches = $this->crime_model->get_crimes_match_autocomplete($user_query);
+        for($i=0; $i<count($matches); $i++){
+            $fixedq[$i]['value'] = $matches[$i]['Crime_ID'];
+            $fixedq[$i]['text'] = $matches[$i]['Crime_Name'];
+        }
+        echo json_encode($fixedq);
+    }
+    
+    public function plot_crime_incident(){
+        $this->load->model('incident_model');
+        $this->load->library('session');
+        
+        $crime_id = $this->input->post("crime_id");
+        $description = $this->input->post("description");
+        $incident_time = $this->input->post("time");
+        $coordinates = $this->input->post("coordinates");
+        $user_id = $this->session->userdata('user_id');
+        
+        //var_dump($coordinates);
+        
+        $this->incident_model->addIncident($crime_id, $description, $coordinates, $incident_time, '1', $user_id, $user_id);
+    }
+    
+    public function fetch_crime_markers(){
+        $startLat = $this->input->get("fromlat");
+        $endLat = $this->input->get("tolat");
+        $startLong = $this->input->get("fromlng");
+        $endLong = $this->input->get("tolng");
+        
+        $this->load->model('incident_model');
+        echo json_encode($this->incident_model->fetch_markers($startLat, $endLat, $startLong, $endLong));
+    }
+    
+    public function plot_police_outposts(){
+        $this->load->model('policeoutposts_model');
+        
+        $outpost_name = $this->input->post("outpost_name");
+        $description = $this->input->post("outpost_desc");
+        $coordinates = $this->input->post("coordinates");
+        
+        //var_dump($coordinates);
+        
+        $this->policeoutposts_model->addOutpost($outpost_name, $description, $coordinates);
+    }
+    
+    public function fetch_policeoutpost_markers(){
+        $startLat = $this->input->get("fromlat");
+        $endLat = $this->input->get("tolat");
+        $startLong = $this->input->get("fromlng");
+        $endLong = $this->input->get("tolng");
+        
+        $this->load->model('policeoutposts_model');
+        echo json_encode($this->policeoutposts_model->fetch_markers($startLat, $endLat, $startLong, $endLong));
+    }
+    
+    public function get_incident_info(){
+        $incident_id = $this->input->get("incident_id");
+        $this->load->model('incident_model');
+        echo json_encode($this->incident_model->get_incident($incident_id)[0]);
+    }
+    
+    public function get_outpost_info(){
+        $outpost_id = $this->input->get("outpost_id");
+        $this->load->model('policeoutposts_model');
+        echo json_encode($this->policeoutposts_model->get_policeoutpost($outpost_id)[0]);
+    }
+    
+    public function delete_outposts(){
+        
+        $this->load->library('session');
+        
+        // Check if the user is already logged in. If not, redirect to login page.
+        if ($this->session->userdata("username") === FALSE) {
+            //redirect("administrator/login");
+            return; // exits this function
+        }
+        
+        $outpost_id = $this->input->post()['outpost_id'];
+        //var_dump($user_ids);
+        $this->load->model("policeoutposts_model");
+        $this->policeoutposts_model->delete_outpost($outpost_id);
+        
+    }
+    
+    public function update_crime_incident(){
+        $this->load->model('incident_model');
+        $this->load->library('session');
+        
+        $incident_id = $this->input->post("incident_id");
+        $crime_id = $this->input->post("crime_id");
+        $description = $this->input->post("description");
+        $incident_time = $this->input->post("time");
+        
+        $this->incident_model->update_incident($incident_id, $crime_id, $description, $incident_time);
+    }
+    
+    public function update_police_outpost(){
+        $this->load->model('policeoutposts_model');
+        $this->load->library('session');
+        
+        $outpost_id = $this->input->post("outpost_id");
+        $outpost_name = $this->input->post("outpost_name");
+        $description = $this->input->post("outpost_desc");
+        
+        $this->policeoutposts_model->update_outpost($outpost_id, $outpost_name, $description);
+    }
+    
     // =======================================================================================
     // User_reports
     
@@ -360,9 +479,10 @@ class Administrator extends CI_Controller {
         }
         
         $incident_ids = $this->input->post()['incident_id'];
+        $user_id = $this->session->userdata("user_id");
         //var_dump($user_ids);
         $this->load->model("incident_model");
-        $this->incident_model->confirm_incident($incident_ids);
+        $this->incident_model->confirm_incident($incident_ids, $user_id);
         
     }
     

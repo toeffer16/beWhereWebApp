@@ -67,8 +67,8 @@ class Dtables{
         $query .= " ORDER BY " . $this->columns[$in_order_column] . " " .
                     $in_order_direction . ", " . $this->primary_key . " asc LIMIT " . $in_start . ", " . $in_length;
         
-        $this->ci->load->model("be_debug_model");
-        $this->ci->be_debug_model->log($query);
+        //$this->ci->load->model("be_debug_model");
+        //$this->ci->be_debug_model->log($query);
         
         
         $results = $this->ci->db->query($query);

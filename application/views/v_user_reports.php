@@ -1,4 +1,8 @@
-
+<style>
+.well {
+    background-color: #f1f8e9;
+}
+</style>
 
 <div class="panel panel-success">
     <div class="panel-heading">Administrator Panel</div>
@@ -65,7 +69,7 @@
                 <tr>
                     <th>Crime</th>
                     <th>Incident Description</th>
-                    <th>GPS Coordinates</th>
+                    <!--<th>GPS Coordinates</th>-->
                     <th>Time</th>
                     <th>Author</th>
                     <th>Approved by</th>
@@ -101,7 +105,7 @@
             "columns": [
                 {data: 'Crime'},
                 {data: 'Incident_Description'},
-                {data: 'GPS_Coordinates'},
+                //{data: 'GPS_Coordinates'},
                 {data: 'Time'},
                 {data: 'Author'},
                 {data: 'Approved_by'},

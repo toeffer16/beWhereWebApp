@@ -112,7 +112,7 @@
             <hr style="text-shadow: 10px;">
 
             <footer>
-                <p class="text-right" style="text-shadow: 10px;"><i>Version 1.0</i> - &copy; BeWhere 2015</p>
+                <p class="text-right" style="text-shadow: 10px;">Copyright &copy; 2015 BeWhere</p>
             </footer>
         </div> <!-- /container -->        
 
